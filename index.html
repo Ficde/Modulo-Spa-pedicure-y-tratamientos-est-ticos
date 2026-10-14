@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Modulo Spa pedicure y tratamientos estéticos</header>
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Fundamentos y evolución del spa pedicure, bioseguridad y manejo del instrumental, técnicas de baño, aromaterapia, exfoliación, hidratación y masaje, junto con modalidades actuales de esmaltado.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Errores y riesgos en spa pedicure relacionados con evaluación previa, bioseguridad, temperatura y uso de productos, aplicación inadecuada de técnicas sobre piel comprometida, masajes contraindicados y falta de derivación profesional.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Adaptación del spa pedicure a distintas necesidades y condiciones del cliente, considerando sensibilidad, estado de la piel, relajación, cuidados estéticos, personalización del servicio y criterios de derivación profesional.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Secuencia práctica de spa pedicure, desde la preparación y bioseguridad hasta el baño, exfoliación, nutrición, hidratación, masaje, acondicionamiento de uñas, esmaltado y recomendaciones finales.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        // ===== ACTIVIDADES: validaciones de texto simplificadas ===
+const modules = {
+
+    // ===================== SÍNTESIS =====================
+    sintesis: [
+        {
+            type: 'text',
+            badge: 'Generalidades del servicio',
+            title: 'Concepto de spa pedicure',
+            instruction: 'Define el concepto del spa pedicure destacando su enfoque integral frente a la pedicuría tradicional.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('spa') || v.includes('higiene')) c++;
+                if (v.includes('orientadas') || v.includes('relajaci')) c++;
+                return c >= 2;
+            },
+            tutor: 'Considera la combinación de acondicionamiento cosmético de piel y uñas con recursos orientados al bienestar.',
+            explanation: 'El spa pedicure combina higiene, acondicionamiento e hidratación con técnicas manuales orientadas a la relajación profunda.'
+        },
+        {
+            type: 'text',
+            badge: 'Antecedentes históricos',
+            title: 'Evolución del cuidado podológico',
+            instruction: 'Clasifica los hitos históricos del cuidado de los pies desde las prácticas bíblicas hasta la figura romana del callista.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('historia')) c++;
+                if (v.includes('registra') || v.includes('milenarias')) c++;
+                if (v.includes('salud')) c++;
+                return c >= 2;
+            },
+            tutor: 'Repasa las menciones del lavado de pies antiguo y el surgimiento de especialistas en callosidades en Roma.',
+            explanation: 'La historia registra prácticas milenarias donde el callista romano atendía durezas buscando salud y bienestar.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Normativa sanitaria',
+            title: 'Bioseguridad y trazabilidad',
+            instruction: 'Selecciona los tres requisitos fundamentales para garantizar la bioseguridad en el procesamiento del instrumental reutilizable.',
+            items: [
+                { text: 'Lavado inicial con detergente enzimático', correct: true },
+                { text: 'Secado completo antes de desinfectar o esterilizar', correct: true },
+                { text: 'Uso de instrumental húmedo directamente en la piel.', correct: false },
+                { text: 'Registro de fechas de procesamiento y trazabilidad.', correct: true }
+            ],
+            tutor: 'Busca los pasos del circuito que aseguran la eliminación de materia orgánica, secado y control de fechas.',
+            explanation: 'Aplicar detergente enzimático, realizar un secado riguroso y registrar la trazabilidad previene contagios.'
+        },
+        {
+            type: 'text',
+            badge: 'Preparación del servicio',
+            title: 'Baño terapéutico de pies',
+            instruction: 'Detalla las funciones principales del baño inicial con agua tibia sobre la piel, cutículas y musculatura.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('baño') || v.includes('ablandar')) c++;
+                if (v.includes('musculatura') || v.includes('impurezas') || v.includes('superficiales')) c++;
+                return c >= 2;
+            },
+            tutor: 'Analiza cómo la inmersión facilita los pasos posteriores y limpia la superficie cutánea.',
+            explanation: 'El baño tibia logra ablandar cutículas, relajar la musculatura del pie y eliminar las impurezas superficiales.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Recursos sensoriales',
+    title: 'Aromaterapia aplicada',
+    instruction: 
+        'Completá las frases.<br><br>' +
+        '1. La aromaterapia utiliza aceites esenciales de lavanda, menta o ___ para complementar la experiencia sensorial sin sustituir los procedimientos de ___.<br>',
+    blanks: ['geranio', 'bioseguridad'],
+    tutor: 'Recuerda los aromas vegetales mencionados en el manual y la primacía de las normas higiénicas.',
+    explanation: 'Incorporar notas de geranio enriquece la experiencia sensorial manteniendo intactos los protocolos de bioseguridad.'
+},
+        {
+            type: 'text',
+            badge: 'Renovación cutánea',
+            title: 'Exfoliación de gránulos',
+            instruction: 'Expone el mecanismo de acción de la exfoliación profunda para remover células muertas e impurezas.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Efectuar') || v.includes('exfoliaci')) &&
+                    (v.includes('textura') || v.includes('suavidad'))
+                );
+            },
+            tutor: 'Observa el trabajo mediante movimientos circulares suaves distribuidos desde los dedos hacia el tobillo.',
+            explanation: 'Efectuar una exfoliación con gránulos remueve células muertas mejorando la textura y suavidad.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Acondicionamiento cosmético',
+            title: 'Máscaras e hidratación intensiva',
+            instruction: 'Identifica los tres ingredientes cosméticos emolientes e humectantes indicados para el tratamiento de la resequedad.',
+            items: [
+                { text: 'Manteca de karité y aloe vera', correct: true },
+                { text: 'Ácido sulfúrico concentrado industrial.', correct: false },
+                { text: 'Urea y ácido láctico', correct: true },
+                { text: 'Glicerina vegetal purificada.', correct: true }
+            ],
+            tutor: 'Agrupa los componentes naturales y sintéticos que mejoran la flexibilidad y retención de agua en la piel.',
+            explanation: 'La manteca de karité, la urea y la glicerina restituyen la humedad en pieles ásperas.'
+        },
+        {
+            type: 'text',
+            badge: 'Maniobras de bienestar',
+            title: 'Masaje relajante en pies',
+            instruction: 'Describe las características de las maniobras de deslizamiento, movimientos circulares y amasamiento suave.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('deslizamientos') || v.includes('amasamiento') || v.includes('progresivo')) c++;
+                if (v.includes('proporciona') || v.includes('confort')) c++;
+                return c >= 2;
+            },
+            tutor: 'Distingue entre la distribución inicial del producto y la compresión suave para liberar tensiones.',
+            explanation: 'Iniciar con deslizamientos, aplicar amasamiento progresivo y finalizar lentamente proporciona un elevado confort.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Oclusivos térmicos',
+            title: 'Parafina cosmética caliente',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'La parafina caliente proporciona una experiencia de calor y confort ideal para pieles muy secas.', color: 'green' },
+                { text: 'La temperatura de la parafina debe aplicarse hirviendo para garantizar la penetración de activos.', color: 'red' },
+                { text: 'La prueba de tolerancia térmica previa previene la aparición de molestias o lesiones en la piel.', color: 'green' },
+                { text: 'La parafina cosmética puede aplicarse directamente sobre heridas abiertas o fisuras sangrantes.', color: 'red' }
+            ],
+            tutor: 'Contrasta los beneficios de humectación profunda del baño de calor con las precauciones de temperatura.',
+            explanation: 'Aplicar parafina tibia genera confort en pieles secas siempre que se verifique la temperatura.'
+        },
+        {
+            type: 'text',
+            badge: 'Terminaciones estéticas',
+            title: 'Modalidades de esmaltado',
+            instruction: 'Sintetiza las opciones de acabado final abarcando esmaltado tradicional, semipermanente, gel y pedicuría francesa.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('esmalte') || v.includes('semipermanente')) &&
+                    (v.includes('francesa') || v.includes('adaptados') || v.includes('preferencia'))
+                );
+            },
+            tutor: 'Considera la durabilidad del sistema elegido y la armonía con la forma y longitud de la uña.',
+            explanation: 'Seleccionar esmalte semipermanente o estilo francesa brinda excelentes acabados adaptados a cada preferencia.'
+        }
+    ],
+
+    // ===================== ANÁLISIS =====================
+    analisis: [
+        {
+            type: 'text',
+            badge: 'Omitir evaluación',
+            title: 'Falta de anamnesis',
+            instruction: 'Examina los riesgos de iniciar un servicio de spa pedicure sin realizar la observación cutánea e interrogatorio inicial.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('anamnesis') || v.includes('detectar')) &&
+                    (v.includes('contraindicaciones') || v.includes('seriamente') || v.includes('seguridad') || v.includes('cliente'))
+                );
+            },
+            tutor: 'Considera el peligro de aplicar cosméticos en clientes con fotosensibilidad, antecedentes alérgicos o lesiones.',
+            explanation: 'Omitir la anamnesis impide detectar alergias o contraindicaciones, comprometiendo seriamente la seguridad del cliente.'
+        },
+        {
+            type: 'text',
+            badge: 'Ruptura de asepsia',
+            title: 'Contaminación cruzada en instrumental',
+            instruction: 'Evalúa las consecuencias de reutilizar alicates o repujadores sin cumplir el circuito completo de esterilización.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('contaminaci') || v.includes('cruzada') || v.includes('bacterianas')) &&
+                    v.includes('gabinete')
+                );
+            },
+            tutor: 'Reflexiona sobre la transmisión de micosis o bacterias por usar herramientas guardadas en húmedo o sin envoltura.',
+            explanation: 'La contaminación cruzada por falta de esterilización propaga infecciones micóticas y bacterianas en el gabinete.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Errores en baños',
+            title: 'Temperatura y tiempo excesivo',
+            instruction: 'Escoge los tres efectos negativos derivados de sumergir los pies en agua demasiado caliente o por tiempo prolongado.',
+            items: [
+                { text: 'Maceración excesiva de la piel e interdigitales', correct: true },
+                { text: 'Riesgo de quemaduras o lesiones térmicas', correct: true },
+                { text: 'Incremento de la firmeza y dureza de las uñas.', correct: false },
+                { text: 'Deshidratación de la capa córnea por lavado.', correct: true }
+            ],
+            tutor: 'Identifica los daños provocados por el calor extremo y la absorción de agua desmedida en los tejidos.',
+            explanation: 'La maceración excesiva, el peligro de quemaduras y la deshidratación debilitan la barrera cutánea.'
+        },
+        {
+            type: 'text',
+            badge: 'Malas prácticas aromáticas',
+            title: 'Uso de aceites esenciales puros',
+            instruction: 'Explica el peligro de aplicar aceites esenciales puros directamente sobre la piel sin una formulación cosmética vehicular.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('aceites') || v.includes('esenciales')) &&
+                    (v.includes('vehicular') || v.includes('irritaci')) &&
+                    (v.includes('reacciones'))
+                );
+            },
+            tutor: 'Analiza la elevada concentración de los extractos puros y su potencial dermocáustico sobre el tejido humano.',
+            explanation: 'Aplicar aceites esenciales sin crema vehicular provoca irritación severa y reacciones alérgicas inmediatas.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Exfoliación inadecuada',
+    title: 'Maniobras agresivas sobre la piel',
+    instruction: 
+        'Completar la frase.<br><br>' +
+        '1. Realizar una exfoliación con excesiva ___ o sobre zonas con ___ abiertas destruye la barrera cutánea y genera ardor.<br>',
+    blanks: ['presión', 'fisuras'],
+    tutor: 'Recuerda que el frotado con gránulos debe ser suave y evitar áreas lastimadas o irritadas.',
+    explanation: 'Ejercer demasiada presión sobre fisuras lastima la piel produciendo inflamación y ardor innecesario.'
+},
+        {
+            type: 'text',
+            badge: 'Abuso de oclusivos ',
+            title: 'Excesso de exposición en parafina',
+            instruction: 'Juzga las complicaciones de sobrepasar el tiempo de exposición indicado en máscaras o baños de parafina.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('tiempo') || v.includes('exposici')) &&
+                    (v.includes('maceraci') || v.includes('hiperemia') || v.includes('posteriores'))
+                );
+            },
+            tutor: 'Observa cómo el calor y la oclusión prolongada pueden sobrecalentar el tejido y alterar el folículo o poro.',
+            explanation: 'Exceder el tiempo de exposición causa maceración e hiperemia excesiva dificultando los pasos posteriores.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Errores en masajes',
+            title: 'Presión en zonas contraindicadas',
+            instruction: 'Señala las tres condiciones vasculares u osteoarticulares donde está prohibido aplicar masajes profundos o amasa.',
+            items: [
+                { text: 'Varices pronunciadas o flebitis activa', correct: true },
+                { text: 'Piel sana sin durezas ni callosidades', correct: false },
+                { text: 'Inflamación aguda o procesos infecciosos', correct: true },
+                { text: 'Fracturas o esguinces recientes', correct: true }
+            ],
+            tutor: 'Busca los cuadros clínicos donde la presión manual puede movilizar trombos o agravar lesiones internas.',
+            explanation: 'Masajear sobre varices, áreas de inflamación o fracturas representa un riesgo severo para la salud.'
+        },
+        {
+            type: 'text',
+            badge: 'Exceso de desgaste',
+            title: 'Trabajo agresivo sobre durezas',
+            instruction: 'Argumenta por qué no se debe intentar eliminar completamente una callosidad engrosada en una única sesión.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Desgastar') || v.includes('callosidad') || v.includes('protectoras')) &&
+                    (v.includes('efecto') || v.includes('doloroso'))
+                );
+            },
+            tutor: 'Contempla la respuesta defensiva de la piel que genera mayor hiperqueratosis ante la agresión violenta.',
+            explanation: 'Desgastar toda la callosidad elimina capas protectoras vivas generando un efecto rebote doloroso.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Invasión de incumbencias ',
+            title: 'Falta de derivación oportuna',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Ante la presencia de secreción, pus o sangrado interdigital se debe suspender la sesión y derivar.', color: 'green' },
+                { text: 'Exceder el límite cosmético para tratar patologías médicas constituye un acto de mala praxis.', color: 'green' },
+                { text: 'El pedicurista estético puede drenar ampollas o cortar fisuras profundas si utiliza bisturí estéril.', color: 'red' },
+                { text: 'Las infecciones micóticas extensas deben tratarse en el gabinete spa mediante máscaras de té verde.', color: 'red' }
+            ],
+            tutor: 'Contrasta los límites del cuidado cosmético superficial con las patologías de resorte médico.',
+            explanation: 'Detectar sangrado o pus exige la derivación médica, evitando incurrir en mala praxis.'
+        },
+        {
+            type: 'text',
+            badge: 'Ruptura de ritmo',
+            title: 'Interrupción brusca del protocolo',
+            instruction: 'Sopesa el impacto negativo de realizar movimientos acelerados, ruidosos o cortar abruptamente el masaje.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('interrupci') || v.includes('ansiedad')) &&
+                    (v.includes('cliente') || v.includes('relajaci') || v.includes('alcanzado'))
+                );
+            },
+            tutor: 'Considera cómo los ruidos molestos o la falta de fluidamente arruinan la experiencia sensorial buscada.',
+            explanation: 'La interrupción brusca genera ansiedad en el cliente rompiendo el estado de relajación alcanzado.'
+        }
+    ],
+    // ===================== ESCENARIOS =====================
+    escenarios: [
+        {
+            type: 'text',
+            badge: 'Sequedad extrema',
+            title: 'Abordaje de talones ásperos',
+            instruction: 'Plantea la estrategia combinada de exfoliación, máscara emoliente e hidratación intensiva para talones resecos.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('Recuperar') ||
+                    (
+                        (v.includes('talones') || v.includes('aplicar') || v.includes('suavizado')) &&
+                        (v.includes('intensiva'))
+                    )    
+                );
+            },
+            tutor: 'Contempla el uso de productos con urea y manteca de karité tras un baño ablandador respetando la piel.',
+            explanation: 'Recuperar los talones exige aplicar un suavizado gradual e hidratación intensiva con manteca de karité.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Sensibilidad aromática',
+            title: 'Consultante con rinitis o alergias',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Ante un cliente con alergias respiratorias se deben omitir los aceites esenciales con aromas intensos.', color: 'green' },
+                { text: 'Es obligatorio aplicar lavanda a todos los clientes sin importar si manifiestan rechazo al olor.', color: 'red' },
+                { text: 'La presencia de un aroma agradable garantiza que el producto sea hipoalergénico y seguro.', color: 'red' },
+                { text: 'Utilizar productos neutros sin perfume garantiza un servicio seguro en personas hiperreactivas.', color: 'green' }
+            ],
+            tutor: 'Analiza la necesidad de adaptar o sustituir recursos aromáticos según la reactividad individual.',
+            explanation: 'Reemplazar esencias por productos neutros evita alergias y respeta la sensibilidad del cliente.'
+        },
+        {
+            type: 'text',
+            badge: 'Sobrecarga física',
+            title: 'Pies cansados por bipedestación',
+            instruction: 'Diseña una secuencia de baño con sales, maniobras de amasamiento y gel refrescante para trabajadores de pie.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Aliviar') || v.includes('bipedestaci')) &&
+                    (v.includes('prolongada') || v.includes('masajes') || v.includes('gel'))
+                );
+            },
+            tutor: 'Coordina la inmersión tibia con mentol o sales y masajes que estimulen el retorno y la liviandad.',
+            explanation: 'Aliviar la bipedestación prolongada requiere baños de sales y masajes con gel refrescante.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Atención a adultos mayores',
+            title: 'Piel senil frágil y delgada',
+            instruction: 'Menciona las tres adaptaciones obligatorias al realizar un spa pedicure en personas de la tercera edad.',
+            items: [
+                { text: 'Frotado enérgico con lija metálica en toda la planta.', correct: false },
+                { text: 'Reducción de la presión en las maniobras de masaje', correct: true },
+                { text: 'Exfoliación extremadamente suave con gránulos finos', correct: true },
+                { text: 'Comprobación rigurosa de la temperatura del agua', correct: true }
+            ],
+            tutor: 'Busca los resguardos para evitar desgarros vasculares o fragilidad capilar en dermis delgadas.',
+            explanation: 'Moderar la presión, usar exfoliantes suaves y verificar la temperatura protege la piel senil.'
+        },
+        {
+            type: 'text',
+            badge: 'Zonas de fricción',
+            title: 'Durezas por calzado angosto',
+            instruction: 'Ilustra la conducta técnica para suavizar durezas situadas en la cabeza de los metatarsianos sin agredir.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Tratar') || v.includes('fricci') || v.includes('metatarsianos')) &&
+                    (v.includes('emolientes') || v.includes('pulido') || v.includes('conservador'))
+                );
+            },
+            tutor: 'Considera el uso de emolientes queratolíticos suaves y pulido conservador con escofina de grano fino.',
+            explanation: 'Tratar la fricción en metatarsianos requiere emolientes cosméticos y un pulido conservador.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Fisuras superficiales',
+            title: 'Grietas sin sangrado en talón',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Las grietas epidérmicas superficiales sin dolor ni sangrado pueden abordarse con hidratación oclusiva.', color: 'green' },
+                { text: 'Es correcto limar dentro de una grieta profunda hasta lograr que el fondo quede rojo brillante.', color: 'red' },
+                { text: 'La aplicación de parafina tibia ayuda a sellar la humedad en pieles con descamación seca.', color: 'green' },
+                { text: 'Todas las grietas en los pies deben cortarse con alicate de cutícula para emparejar los bordes.', color: 'red' }
+            ],
+            tutor: 'Evalúa la profundidad de la grieta para decidir entre hidratación oclusiva o derivación.',
+            explanation: 'tratar grietas superficiales con parafina humectante restaura la elasticidad sin cortar tejido.'
+        },
+        {
+            type: 'text',
+            badge: 'Servicio combinado  ',
+            title: 'Esmaltado semipermanente post-spa',
+            instruction: 'Desglosa los recaudos para desengrasar la lámina ungueal si se aplica semipermanente tras masajes con óleo.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Desengrasar') || v.includes('ungueal')) &&
+                    (v.includes('garantiza') || v.includes('adherencia') || v.includes('correcta') || v.includes('semipermanente'))
+                );
+            },
+            tutor: 'Detalla la limpieza meticulosa del plato ungueal con alcohol o cleanser antes de colocar el primer.',
+            explanation: 'Desengrasar la lámina ungueal tras los óleos garantiza la adherencia correcta del semipermanente.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Hallazgos de alarma',
+            title: 'Fisuras profundas y dolor',
+            instruction: 'Reúne las acciones inmediatas a ejecutar al detectar fisuras sangrantes o dolor agudo al palpar el talón.',
+            items: [
+                { text: 'Suspensión de la etapa de exfoliación en esa zona', correct: true },
+                { text: 'Omisión del baño de inmersión prolongado', correct: true },
+                { text: 'Recomendación de consulta con profesional médico o podólogo.', correct: true },
+                { text: 'Aplicación de ácido salicílico al 40% sin prescripción.', correct: false }
+            ],
+            tutor: 'Agrupa las medidas de protección que evitan la contaminación del torrente sanguíneo y la derivación.',
+            explanation: 'Suspender el exfoliante, evitar la inmersión y derivar al podólogo previene complicaciones.'
+        },
+        {
+            type: 'text',
+            badge: 'Estrés elevado',
+            title: 'Cliente en busca de desconexión',
+            instruction: 'Expón la selección de recursos de aromaterapia, luz tenue y técnica de masaje para lograr relajación total.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('aroma') || v.includes('lavanda')) &&
+                    (v.includes('ambientaci') || v.includes('calma'))
+                );
+            },
+            tutor: 'Coordina el uso de aceite de lavanda, música ambiental suave y maniobras de ritmo muy lento.',
+            explanation: 'Combinar aroma a lavanda, cuidar la ambientación y realizar un masaje pausado induce la calma.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Optimización del tiempo',
+            title: 'Servicio express de confort',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Omitir la bioseguridad es una excelente forma de ahorrar tiempo en servicios de spa rápidos.', color: 'red' },
+                { text: 'Un protocolo express puede concentrarse en baño rápido, exfoliación ligera e hidratación con masaje.', color: 'green' },
+                { text: 'En servicios de tiempo reducido debe aplicarse el exfoliante con el doble de fuerza física.', color: 'red' },
+                { text: 'La evaluación inicial rápida permite seleccionar las etapas más eficaces sin perder seguridad.', color: 'green' }
+            ],
+            tutor: 'Considera la selección inteligente de etapas esenciales para brindar calidad en menor tiempo.',
+            explanation: 'Organizar un protocolo express requiere seleccionar etapas clave manteniendo la bioseguridad.'
+        }
+    ],
+
+    // ===================== PRÁCTICA =====================
+    practica: [
+        {
+            type: 'checklist',
+            badge: 'Acondicionamiento inicial',
+            title: 'Preparación ergonómica y bioseguridad',
+            instruction: 'Elige las tres acciones de alistamiento del espacio antes de recibir a la persona para el spa pedicure.',
+            items: [
+                { text: 'Sanitización de la sillón y recipientes de baño', correct: true },
+                { text: 'Preparación de café caliente sobre la mesa de trabajo.', correct: false },
+                { text: 'Disposición ordenada de toallas limpias y descartables', correct: true },
+                { text: 'Verificación del estado y esterilidad del instrumental', correct: true }
+            ],
+            tutor: 'Enfócate en la higiene de superficies, insumos textiles limpios y caja de instrumental procesado.',
+            explanation: 'sanitizar el sillón, disponer toallas limpias y verificar el instrumental garantiza el inicio.'
+        },
+        {
+            type: 'text',
+            badge: 'Técnica de baño',
+            title: 'Inmersión y control térmico',
+            instruction: 'Instruye los pasos para preparar el baño de pies comprobando la temperatura del agua antes del contacto.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Acondicionar') || v.includes('temperatura') || v.includes('tolerancia') || v.includes('recipiente'))
+                );
+            },
+            tutor: 'Detalla el vertido de agua tibia, la adición de sales o jabón y la prueba en el dorso de la mano.',
+            explanation: 'Acondicionar el recipiente, verificar la temperatura y comprobar la tolerancia asegura el baño.'
+        },
+        {
+         type: 'blanks',
+         badge: 'Secado técnico',
+         title: 'Higiene de espacios interdigitales',
+         instruction: 
+        'Completá las frases.<br><br>' +
+        '1. Al retirar los pies del agua se realiza un secado meticuloso, apoyando la toalla sin frotar y secando cada espacio ___.<br>',
+         blanks: ['interdigital'],
+         tutor: 'Recuerda que la humedad atrapada entre los dedos favorece el desarrollo de micosis y maceración.',
+         explanation: 'Secar minuciosamente la piel y prestar atención al espacio interdigital previene hongos.'
+},
+        {
+            type: 'traffic',
+            badge: 'Exfoliación práctica',
+            title: 'Frotado granulado controlado',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Debe ejercerse presión máxima sobre los tobillos para remover la piel dura de los maleolos.', color: 'red' },
+                { text: 'Los residuos de exfoliante pueden dejarse sobre la piel para que actúen durante el esmaltado.', color: 'red' },
+                { text: 'El exfoliante de gránulos se distribuye sobre el pie realizando movimientos circulares ascendentes.', color: 'green' },
+                { text: 'Retirar completamente los restos de gránulos con agua limpia es indispensable antes del masaje.', color: 'green' }
+            ],
+            tutor: 'Observa la técnica de distribución circular y el enjuague total de las partículas abrasivas.',
+            explanation: 'Masajear con movimientos circulares y enjuagar todo residuo deja la piel lista para nutrir.'
+        },
+        {
+            type: 'text',
+            badge: 'Tratamiento de máscara',
+            title: 'Pincelado y oclusión',
+            instruction: 'Prescribe la técnica de aplicación de la máscara nutritiva con pincel suave y envoltorio térmico.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Pincelar') || v.includes('generar')) &&
+                    (v.includes('oclusi') || v.includes('respetar') || v.includes('potencia') || v.includes('nutrici'))
+                );
+            },
+            tutor: 'Ordena la distribución uniforme de la crema, el cubrimiento con film o bota y el tiempo de reposo.',
+            explanation: 'Pincelar la máscara, generar oclusión con film y respetar el reposo potencia la nutrición.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Terapia de calor',
+            title: 'Baño de parafina cosmética',
+            instruction: 'Determina las tres etapas clave para la aplicación segura de parafina caliente en pies resecos.',
+            items: [
+                { text: 'Uso de parafina hirviendo recién derretida de la vela.', correct: false },
+                { text: 'Higienización y verificación de piel intacta previa', correct: true },
+                { text: 'Prueba de temperatura en la muñeca antes de pincelar o meter el pie', correct: true },
+                { text: 'Aislamiento con bolsa plástica y bota de rizo por 15 minutos.', correct: true }
+            ],
+            tutor: 'Agrupa la revisión de piel, el test térmico y la cobertura textil aislante.',
+            explanation: 'Verificar la piel, comprobar la temperatura y envolver en bota térmica suaviza la dermis.'
+        },
+        {
+            type: 'text',
+            badge: 'Secuencia de masaje ',
+            title: 'Ejecución de amasamiento y pases',
+            instruction: 'Guía la ejecución práctica del masaje comenzando por eflurage, amasamiento plantar y flexiones.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Iniciar') || v.includes('eflurage') || v.includes('amasamiento')) &&
+                    (v.includes('planta') || v.includes('pie'))
+                );
+            },
+            tutor: 'Pauta los roces iniciales con crema, la presión de pulgares en planta y las movilizaciones suaves.',
+            explanation: 'Iniciar con eflurage, realizar amasamiento en planta y finalizar con flexiones relaja el pie.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Humectación profunda',
+            title: 'Aplicación de cremas con urea',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'La crema con urea al 10% se aplica mediante masaje penetrante hasta su absorción completa.', color: 'green' },
+                { text: 'Es correcto aplicar capas gruesas de urea sobre heridas abiertas para acelerar la cicatrización.', color: 'red' },
+                { text: 'La crema hidratante sustituye la necesidad de lavar el pie al comienzo de la sesión.', color: 'red' },
+                { text: 'Prestar especial atención al talón y zonas de apoyo restablece la flexibilidad cutánea.', color: 'green' }
+            ],
+            tutor: 'Asocia la acción queratolítica suave de la urea con la técnica de fricción penetrante.',
+            explanation: 'Aplicar crema con urea en el talón favorece la absorción y flexibilidad de la piel.'
+        },
+        {
+            type: 'text',
+            badge: 'Terminación y color',
+            title: 'Esmaltado y sellado final',
+            instruction: 'Pauta el procedimiento para limpiar el plato ungueal, aplicar base, dos capas de color y top coat.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Aplicar') || v.includes('protectora') || v.includes('color') || v.includes('coat'))&&
+                    (v.includes('sellado') || v.includes('duradero'))
+                );
+            },
+            tutor: 'Ordena la desinfección de la uña con alcohol, la capa protectora, el tono elegido y el protector de brillo.',
+            explanation: 'Aplicar la base protectora, dos capas de color y el top coat logra un sellado duradero.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Cierre del servicio',
+            title: 'Evaluación de confort y despedida',
+            instruction: 'compila las tres comprobaciones finales antes de dar por concluida la sesión de spa pedicure.',
+            items: [
+                { text: 'Exigencia de propina antes de colocar el calzado.', correct: false },
+                { text: 'Verificación del secado completo del esmaltado', correct: true },
+                { text: 'Comprobación de la comodidad y satisfacción del cliente', correct: true },
+                { text: 'Entrega de recomendaciones de hidratación domiciliaria.', correct: true }
+            ],
+            tutor: 'Busca la revisión de la terminación estética, el confort general y los consejos de mantenimiento en casa.',
+            explanation: 'Comprobar el esmaltado, verificar el confort y brindar recomendaciones cierra un servicio profesional.'
+        }
+    ]
+};
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
